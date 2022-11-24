@@ -133,8 +133,13 @@ public class RangeBar extends View {
     private float mBarWeight = DEFAULT_BAR_WEIGHT_DP;
 
     private boolean mIsBarRounded = false;
+    private boolean mIsBarShadowed = false;
 
     private int mBarColor = DEFAULT_BAR_COLOR;
+    private float mBarShadowedRadius = 0;
+    private float mBarShadowedDx = 0;
+    private float mBarShadowedDy = 0;
+    private int mBarShadowedColor = DEFAULT_BAR_COLOR;
 
     private int mBarBoundaryColor = DEFAULT_BAR_BOUNDARY_COLOR;
 
@@ -233,6 +238,7 @@ public class RangeBar extends View {
     private ArrayList<Integer> mActiveConnectingLineColors = new ArrayList<>();
 
     private int mActiveBarColor;
+    private int mActiveBarShadowedColor;
     private int mActiveBarBoundaryColor;
 
     private int mActiveTickDefaultColor;
@@ -321,7 +327,12 @@ public class RangeBar extends View {
         bundle.putFloat("TICK_HEIGHT_DP", mTickHeight);
         bundle.putFloat("BAR_WEIGHT", mBarWeight);
         bundle.putBoolean("BAR_ROUNDED", mIsBarRounded);
+        bundle.putBoolean("BAR_SHADOWED", mIsBarShadowed);
         bundle.putInt("BAR_COLOR", mBarColor);
+        bundle.putFloat("BAR_SHADOWED_RADIUS", mBarShadowedRadius);
+        bundle.putFloat("BAR_SHADOWED_DX", mBarShadowedDx);
+        bundle.putFloat("BAR_SHADOWED_DY", mBarShadowedDy);
+        bundle.putInt("BAR_SHADOWED_COLOR", mBarShadowedColor);
         bundle.putInt("BAR_BOUNDARY_COLOR", mBarBoundaryColor);
         bundle.putFloat("BAR_BOUNDARY_SIZE", mBarBoundarySize);
         bundle.putFloat("CONNECTING_LINE_WEIGHT", mConnectingLineWeight);
@@ -373,7 +384,12 @@ public class RangeBar extends View {
             mTickHeight = bundle.getFloat("TICK_HEIGHT_DP");
             mBarWeight = bundle.getFloat("BAR_WEIGHT");
             mIsBarRounded = bundle.getBoolean("BAR_ROUNDED", false);
+            mIsBarShadowed = bundle.getBoolean("BAR_SHADOWED", false);
             mBarColor = bundle.getInt("BAR_COLOR");
+            mBarShadowedRadius = bundle.getFloat("BAR_SHADOWED_RADIUS");
+            mBarShadowedDx = bundle.getFloat("BAR_SHADOWED_DX");
+            mBarShadowedDy = bundle.getFloat("BAR_SHADOWED_DY");
+            mBarColor = bundle.getInt("BAR_SHADOWED_COLOR");
             mBarBoundaryColor = bundle.getInt("BAR_BOUNDARY_COLOR");
             mBarBoundarySize = bundle.getInt("BAR_BOUNDARY_SIZE");
             mThumbSize = bundle.getFloat("CIRCLE_SIZE");
@@ -473,7 +489,7 @@ public class RangeBar extends View {
         final float barLength = w - (2 * marginLeft);
 
         mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickDefaultColor, mTickColors,
-                mBarWeight, mBarColor, mBarBoundaryColor, mBarBoundarySize, mIsBarRounded, mTickLabelColor, mTickLabelSelectedColor,
+                mBarWeight, mBarColor, mBarBoundaryColor, mBarBoundarySize, mIsBarRounded, mBarShadowedRadius, mBarShadowedDx, mBarShadowedDy,  mBarShadowedColor, mIsBarShadowed, mTickLabelColor, mTickLabelSelectedColor,
                 mTickTopLabels, mTickBottomLabels, mTickDefaultLabel, mTickLabelSize, mFontFamily, mBottomLabelMarginTop);
 
         // Initialize thumbs to the desired indices
@@ -1321,6 +1337,7 @@ public class RangeBar extends View {
     public void setEnabled(boolean enabled) {
         if (!enabled) {
             mBarColor = DEFAULT_BAR_COLOR;
+            mBarShadowedColor = DEFAULT_BAR_COLOR;
             mBarBoundaryColor = DEFAULT_BAR_BOUNDARY_COLOR;
             setConnectingLineColor(DEFAULT_BAR_COLOR);
             mThumbColor = DEFAULT_BAR_COLOR;
@@ -1333,6 +1350,7 @@ public class RangeBar extends View {
             mTickLabelSelectedColor = DEFAULT_BAR_COLOR;
         } else {
             mBarColor = mActiveBarColor;
+            mBarShadowedColor = mActiveBarShadowedColor;
             mBarBoundaryColor = mActiveBarBoundaryColor;
             setConnectingLineColor(mActiveConnectingLineColor);
             setConnectingLineColors(mActiveConnectingLineColors);
@@ -1443,6 +1461,20 @@ public class RangeBar extends View {
             );
 
             mBarColor = ta.getColor(R.styleable.RangeBar_mrb_rangeBarColor, DEFAULT_BAR_COLOR);
+            mBarShadowedRadius = ta.getDimension(R.styleable.RangeBar_mrb_rangeBarShadowedRadius,
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0,
+                            mDisplayMetrices)
+            );
+            mBarShadowedDx = ta.getDimension(R.styleable.RangeBar_mrb_rangeBarShadowedDx,
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0,
+                            mDisplayMetrices)
+            );
+            mBarShadowedDy = ta.getDimension(R.styleable.RangeBar_mrb_rangeBarShadowedDy,
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0,
+                            mDisplayMetrices)
+            );
+
+            mBarShadowedColor = ta.getColor(R.styleable.RangeBar_mrb_rangeBarShadowedColor, DEFAULT_BAR_COLOR);
             mBarBoundaryColor = ta.getColor(R.styleable.RangeBar_mrb_rangeBarBoundaryColor, DEFAULT_BAR_BOUNDARY_COLOR);
             mBarBoundarySize = ta.getDimension(R.styleable.RangeBar_mrb_rangeBarBoundarySize,
                     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_BAR_BOUNDARY_SIZE_DP,
@@ -1451,6 +1483,7 @@ public class RangeBar extends View {
             mTextColor = ta.getColor(R.styleable.RangeBar_mrb_pinTextColor, DEFAULT_TEXT_COLOR);
             mPinColor = ta.getColor(R.styleable.RangeBar_mrb_pinColor, DEFAULT_PIN_COLOR);
             mActiveBarColor = mBarColor;
+            mActiveBarShadowedColor = mBarShadowedColor;
             mActiveBarBoundaryColor = mBarBoundaryColor;
 
 
@@ -1506,6 +1539,7 @@ public class RangeBar extends View {
             mIsRangeBar = ta.getBoolean(R.styleable.RangeBar_mrb_rangeBar, true);
             mArePinsTemporary = ta.getBoolean(R.styleable.RangeBar_mrb_temporaryPins, true);
             mIsBarRounded = ta.getBoolean(R.styleable.RangeBar_mrb_rangeBar_rounded, false);
+            mIsBarShadowed = ta.getBoolean(R.styleable.RangeBar_mrb_rangeBar_shadowed, false);
 
             float density = mDisplayMetrices.density;
             mMinPinFont = ta.getDimension(R.styleable.RangeBar_mrb_pinMinFont,
@@ -1544,6 +1578,11 @@ public class RangeBar extends View {
                 mBarBoundaryColor,
                 mBarBoundarySize,
                 mIsBarRounded,
+                mBarShadowedRadius,
+                mBarShadowedDx,
+                mBarShadowedDy,
+                mBarShadowedColor,
+                mIsBarShadowed,
                 mTickLabelColor,
                 mTickLabelSelectedColor,
                 mTickTopLabels,

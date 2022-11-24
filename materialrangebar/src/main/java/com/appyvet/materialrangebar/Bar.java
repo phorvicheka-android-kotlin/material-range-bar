@@ -100,7 +100,12 @@ public class Bar {
                float tickHeight,
                float barWeight,
                int barColor,
-               boolean isBarRounded) {
+               boolean isBarRounded,
+               float barShadowedRadius,
+               float barShadowedDx,
+               float barShadowedDy,
+               int barShadowedColor,
+               boolean isBarShadowed) {
         mRes = ctx.getResources();
 
         mLeftX = x;
@@ -111,13 +116,23 @@ public class Bar {
         mTickDistance = length / mNumSegments;
         mTickHeight = tickHeight;
         // Initialize the paint.
-        mBarPaint = new Paint();
+        mBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBarPaint.setColor(barColor);
         mBarPaint.setStrokeWidth(barWeight);
         mBarPaint.setAntiAlias(true);
         if (isBarRounded) {
             mBarPaint.setStrokeCap(Paint.Cap.ROUND);
         }
+        if (isBarShadowed) {
+            // float radius = (float) (barWeight * 0.2);
+            // int dy = (int) (radius * 0.5);
+            mBarPaint.setShadowLayer(barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor);
+        }
+
+
+        // Important for certain APIs
+        // View.setLayerType(LAYER_TYPE_SOFTWARE, mBarPaint);
+
         mTickPaint = new Paint();
         mTickPaint.setStrokeWidth(barWeight);
         mTickPaint.setAntiAlias(true);
@@ -146,8 +161,13 @@ public class Bar {
                int tickDefaultColor,
                float barWeight,
                int barColor,
-               boolean isBarRounded) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded);
+               boolean isBarRounded,
+               float barShadowedRadius,
+               float barShadowedDx,
+               float barShadowedDy,
+               int barShadowedColor,
+               boolean isBarShadowed) {
+        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
 
         mTickDefaultColor = tickDefaultColor;
         mTickPaint.setColor(tickDefaultColor);
@@ -178,6 +198,11 @@ public class Bar {
                float barWeight,
                int barColor,
                boolean isBarRounded,
+               float barShadowedRadius,
+               float barShadowedDx,
+               float barShadowedDy,
+               int barShadowedColor,
+               boolean isBarShadowed,
                int tickLabelColor,
                int tickLabelSelectedColor,
                CharSequence[] tickTopLabels,
@@ -185,7 +210,7 @@ public class Bar {
                String tickDefaultLabel,
                float tickLabelSize,
                int mFontFamily) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded);
+        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
 
         if (tickTopLabels != null || tickBottomLabels != null) {
             // Creates the paint and sets the Paint values
@@ -231,6 +256,11 @@ public class Bar {
                float barWeight,
                int barColor,
                boolean isBarRounded,
+               float barShadowedRadius,
+               float barShadowedDx,
+               float barShadowedDy,
+               int barShadowedColor,
+               boolean isBarShadowed,
                int tickLabelColor,
                int tickLabelSelectedColor,
                CharSequence[] tickTopLabels,
@@ -238,7 +268,7 @@ public class Bar {
                String tickDefaultLabel,
                float tickLabelSize,
                int fontFamily) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
+        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
         mTickDefaultColor = tickDefaultColor;
         mTickPaint.setColor(tickDefaultColor);
     }
@@ -276,6 +306,11 @@ public class Bar {
                int barBoundaryColor,
                float barBoundarySize,
                boolean isBarRounded,
+               float barShadowedRadius,
+               float barShadowedDx,
+               float barShadowedDy,
+               int barShadowedColor,
+               boolean isBarShadowed,
                int tickLabelColor,
                int tickLabelSelectedColor,
                CharSequence[] tickTopLabels,
@@ -285,7 +320,7 @@ public class Bar {
                int fontFamily,
                float bottomLabelMarginTop) {
 
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
+        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
 
         mBottomLabelMarginTop = bottomLabelMarginTop;
         mTickDefaultColor = tickDefaultColor;
@@ -305,7 +340,7 @@ public class Bar {
      *               View#onDraw()}
      */
     public void draw(Canvas canvas) {
-        if(mBarBoundarySize > 0){
+        if (mBarBoundarySize > 0) {
             mBarPaint.setColor(mBarBoundaryColor);
             mBarPaint.setStrokeWidth(mBarWeight + mBarBoundarySize);
             canvas.drawLine(mLeftX, mY, mRightX, mY, mBarPaint);

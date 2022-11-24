@@ -15,6 +15,11 @@
         <attr name="mrb_tickLabelSize" format="dimension" />
         <attr name="mrb_barWeight" format="dimension" />
         <attr name="mrb_rangeBarColor" format="reference|color" />
+        <attr name="mrb_rangeBarShadowedRadius" format="dimension" />
+        <attr name="mrb_rangeBarShadowedDx" format="dimension" />
+        <attr name="mrb_rangeBarShadowedDy" format="dimension" />
+        <attr name="mrb_rangeBarShadowedColor" format="reference|color" />
+        <attr name="mrb_rangeBar_shadowed" format="boolean" />
         <attr name="mrb_rangeBarBoundaryColor" format="reference|color" />
         <attr name="mrb_rangeBarBoundarySize" format="dimension" />
         <attr name="mrb_minThumbDistance" format="float"/>
