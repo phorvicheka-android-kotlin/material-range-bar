@@ -18,6 +18,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Xfermode;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
@@ -72,6 +73,8 @@ public class Bar {
     private float mTickLabelSize;
 
     private int mTickDefaultColor;
+    private int mTickActiveColor;
+    private int mTickInactiveColor;
 
     private float mBottomLabelMarginTop = 0;
 
@@ -300,6 +303,8 @@ public class Bar {
                int tickCount,
                float tickHeight,
                int tickDefaultColor,
+               int tickActiveColor,
+               int tickInactiveColor,
                List<Integer> tickColors,
                float barWeight,
                int barColor,
@@ -324,6 +329,8 @@ public class Bar {
 
         mBottomLabelMarginTop = bottomLabelMarginTop;
         mTickDefaultColor = tickDefaultColor;
+        mTickActiveColor = tickActiveColor;
+        mTickInactiveColor = tickInactiveColor;
         mTickColors = tickColors;
 
         mBarColor = barColor;
@@ -458,7 +465,9 @@ public class Bar {
         // Loop through and draw each tick (except final tick).
         for (int i = 0; i < mNumSegments; i++) {
             final float x = i * mTickDistance + mLeftX;
-            canvas.drawCircle(x, mY, mTickHeight, getTick(i));
+
+            //canvas.drawCircle(x, mY, mTickHeight, getTick(i));
+            canvas.drawCircle(x, mY, mTickHeight, getTick(i, rightThumb, leftThumb));
 
             if (paintLabel) {
                 if (mTickTopLabels != null)
@@ -470,7 +479,8 @@ public class Bar {
         }
         // Draw final tick. We draw the final tick outside the loop to avoid any
         // rounding discrepancies.
-        canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments));
+        // canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments));
+        canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments, rightThumb, leftThumb));
 
         // Draw final tick's label outside the loop
         if (paintLabel) {
@@ -528,6 +538,23 @@ public class Bar {
             mTickPaint.setColor(mTickColors.get(index));
         } else {
             mTickPaint.setColor(mTickDefaultColor);
+        }
+
+        return mTickPaint;
+    }
+
+    private Paint getTick(int index, PinView rightThumb, @Nullable PinView leftThumb) {
+        if (mTickColors != null && index < mTickColors.size()) {
+            mTickPaint.setColor(mTickColors.get(index));
+        } else {
+            final float x = index * mTickDistance + mLeftX;
+            boolean isActive;
+            if (leftThumb != null) {
+                isActive = x > leftThumb.getX() && x < rightThumb.getX();
+            } else {
+                isActive = x < rightThumb.getX();
+            }
+            mTickPaint.setColor(isActive ? mTickActiveColor : mTickInactiveColor);
         }
 
         return mTickPaint;

@@ -156,6 +156,8 @@ public class RangeBar extends View {
     private float mThumbRadiusDP = DEFAULT_EXPANDED_PIN_RADIUS_DP;
 
     private int mTickDefaultColor = DEFAULT_TICK_COLOR;
+    private int mTickActiveColor = DEFAULT_TICK_COLOR;
+    private int mTickInactiveColor = DEFAULT_TICK_COLOR;
 
     private ArrayList<Integer> mTickColors = new ArrayList<>();
 
@@ -242,6 +244,8 @@ public class RangeBar extends View {
     private int mActiveBarBoundaryColor;
 
     private int mActiveTickDefaultColor;
+    private int mActiveTickActiveColor;
+    private int mActiveTickInactiveColor;
 
     private ArrayList<Integer> mActiveTickColors = new ArrayList<>();
 
@@ -317,6 +321,8 @@ public class RangeBar extends View {
         bundle.putFloat("TICK_END", mTickEnd);
         bundle.putFloat("TICK_INTERVAL", mTickInterval);
         bundle.putInt("TICK_COLOR", mTickDefaultColor);
+        bundle.putInt("TICK_ACTIVE_COLOR", mTickActiveColor);
+        bundle.putInt("TICK_INACTIVE_COLOR", mTickInactiveColor);
         bundle.putIntegerArrayList("TICK_COLORS", mTickColors);
         bundle.putInt("TICK_LABEL_COLOR", mTickLabelColor);
         bundle.putInt("TICK_LABEL_SELECTED_COLOR", mTickLabelSelectedColor);
@@ -375,6 +381,8 @@ public class RangeBar extends View {
             mTickEnd = bundle.getFloat("TICK_END");
             mTickInterval = bundle.getFloat("TICK_INTERVAL");
             mTickDefaultColor = bundle.getInt("TICK_COLOR");
+            mTickDefaultColor = bundle.getInt("TICK_ACTIVE_COLOR");
+            mTickDefaultColor = bundle.getInt("TICK_INACTIVE_COLOR");
             mTickColors = bundle.getIntegerArrayList("TICK_COLORS");
             mTickLabelColor = bundle.getInt("TICK_LABEL_COLOR");
             mTickLabelSelectedColor = bundle.getInt("TICK_LABEL_SELECTED_COLOR");
@@ -488,7 +496,7 @@ public class RangeBar extends View {
 
         final float barLength = w - (2 * marginLeft);
 
-        mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickDefaultColor, mTickColors,
+        mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickDefaultColor, mTickActiveColor, mTickInactiveColor, mTickColors,
                 mBarWeight, mBarColor, mBarBoundaryColor, mBarBoundarySize, mIsBarRounded, mBarShadowedRadius, mBarShadowedDx, mBarShadowedDy,  mBarShadowedColor, mIsBarShadowed, mTickLabelColor, mTickLabelSelectedColor,
                 mTickTopLabels, mTickBottomLabels, mTickDefaultLabel, mTickLabelSize, mFontFamily, mBottomLabelMarginTop);
 
@@ -1345,6 +1353,8 @@ public class RangeBar extends View {
             mThumbColorRight = DEFAULT_BAR_COLOR;
             mThumbBoundaryColor = DEFAULT_BAR_COLOR;
             mTickDefaultColor = DEFAULT_BAR_COLOR;
+            mTickActiveColor = DEFAULT_BAR_COLOR;
+            mTickInactiveColor = DEFAULT_BAR_COLOR;
             setTickColors(DEFAULT_BAR_COLOR);
             mTickLabelColor = DEFAULT_BAR_COLOR;
             mTickLabelSelectedColor = DEFAULT_BAR_COLOR;
@@ -1359,6 +1369,8 @@ public class RangeBar extends View {
             mThumbColorRight = mActiveCircleColorRight;
             mThumbBoundaryColor = mActiveCircleBoundaryColor;
             mTickDefaultColor = mActiveTickDefaultColor;
+            mTickActiveColor = mActiveTickActiveColor;
+            mTickInactiveColor = mActiveTickInactiveColor;
             setTickColors(mActiveTickColors);
             mTickLabelColor = mActiveTickLabelColor;
             mTickLabelSelectedColor = mActiveTickLabelSelectedColor;
@@ -1502,7 +1514,14 @@ public class RangeBar extends View {
             mActiveCircleColorRight = mThumbColorRight;
             mActiveCircleBoundaryColor = mThumbBoundaryColor;
             mTickDefaultColor = ta.getColor(R.styleable.RangeBar_mrb_tickDefaultColor, DEFAULT_TICK_COLOR);
+            mTickActiveColor = ta.getColor(R.styleable.RangeBar_mrb_tickActiveColor, DEFAULT_TICK_COLOR);
+            mTickInactiveColor = ta.getColor(R.styleable.RangeBar_mrb_tickInactiveColor, DEFAULT_TICK_COLOR);
+            if(mTickInactiveColor != mTickDefaultColor) {
+                mTickDefaultColor = mTickInactiveColor;
+            }
             mActiveTickDefaultColor = mTickDefaultColor;
+            mActiveTickActiveColor = mTickActiveColor;
+            mActiveTickInactiveColor = mTickInactiveColor;
             mTickColors = getColors(ta.getTextArray(R.styleable.RangeBar_mrb_tickColors), mTickDefaultColor);
             mActiveTickColors = new ArrayList<>(mTickColors);
 
@@ -1572,6 +1591,8 @@ public class RangeBar extends View {
                 mTickCount,
                 mTickHeight,
                 mTickDefaultColor,
+                mTickActiveColor,
+                mTickInactiveColor,
                 mTickColors,
                 mBarWeight,
                 mBarColor,

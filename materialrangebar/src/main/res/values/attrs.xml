@@ -6,6 +6,8 @@
         <attr name="mrb_tickInterval" format="float" />
         <attr name="mrb_tickHeight" format="dimension" />
         <attr name="mrb_tickDefaultColor" format="color" />
+        <attr name="mrb_tickActiveColor" format="color" />
+        <attr name="mrb_tickInactiveColor" format="color" />
         <attr name="mrb_tickColors" format="reference" />
         <attr name="mrb_tickLabelColor" format="color" />
         <attr name="mrb_tickLabelSelectedColor" format="color" />
