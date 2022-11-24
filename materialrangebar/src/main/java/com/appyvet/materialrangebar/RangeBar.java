@@ -119,6 +119,7 @@ public class RangeBar extends View {
     // Instance variables for all of the customizable attributes
 
     private float mTickHeight = DEFAULT_TICK_HEIGHT_DP;
+    private float mTickWidth = 0;
 
     private float mTickStart = DEFAULT_TICK_START;
 
@@ -331,6 +332,7 @@ public class RangeBar extends View {
         bundle.putString("TICK_DEFAULT_LABEL", mTickDefaultLabel);
 
         bundle.putFloat("TICK_HEIGHT_DP", mTickHeight);
+        bundle.putFloat("TICK_WIDTH_DP", mTickWidth);
         bundle.putFloat("BAR_WEIGHT", mBarWeight);
         bundle.putBoolean("BAR_ROUNDED", mIsBarRounded);
         bundle.putBoolean("BAR_SHADOWED", mIsBarShadowed);
@@ -390,6 +392,7 @@ public class RangeBar extends View {
             mTickBottomLabels = bundle.getCharSequenceArray("TICK_BOTTOM_LABELS");
             mTickDefaultLabel = bundle.getString("TICK_DEFAULT_LABEL");
             mTickHeight = bundle.getFloat("TICK_HEIGHT_DP");
+            mTickWidth = bundle.getFloat("TICK_WIDTH_DP");
             mBarWeight = bundle.getFloat("BAR_WEIGHT");
             mIsBarRounded = bundle.getBoolean("BAR_ROUNDED", false);
             mIsBarShadowed = bundle.getBoolean("BAR_SHADOWED", false);
@@ -496,7 +499,7 @@ public class RangeBar extends View {
 
         final float barLength = w - (2 * marginLeft);
 
-        mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickDefaultColor, mTickActiveColor, mTickInactiveColor, mTickColors,
+        mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickWidth, mTickDefaultColor, mTickActiveColor, mTickInactiveColor, mTickColors,
                 mBarWeight, mBarColor, mBarBoundaryColor, mBarBoundarySize, mIsBarRounded, mBarShadowedRadius, mBarShadowedDx, mBarShadowedDy,  mBarShadowedColor, mIsBarShadowed, mTickLabelColor, mTickLabelSelectedColor,
                 mTickTopLabels, mTickBottomLabels, mTickDefaultLabel, mTickLabelSize, mFontFamily, mBottomLabelMarginTop);
 
@@ -1443,6 +1446,10 @@ public class RangeBar extends View {
                     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_TICK_HEIGHT_DP,
                             mDisplayMetrices)
             );
+            mTickWidth = ta.getDimension(R.styleable.RangeBar_mrb_tickWidth,
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0,
+                            mDisplayMetrices)
+            );
             mBarWeight = ta.getDimension(R.styleable.RangeBar_mrb_barWeight,
                     TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_BAR_WEIGHT_DP,
                             mDisplayMetrices)
@@ -1590,6 +1597,7 @@ public class RangeBar extends View {
                 getBarLength(),
                 mTickCount,
                 mTickHeight,
+                mTickWidth,
                 mTickDefaultColor,
                 mTickActiveColor,
                 mTickInactiveColor,

@@ -59,6 +59,7 @@ public class Bar {
     private float mTickDistance;
 
     private final float mTickHeight;
+    private final float mTickWidth;
 
     private int mTickLabelColor;
 
@@ -101,6 +102,7 @@ public class Bar {
                float length,
                int tickCount,
                float tickHeight,
+               float tickWidth,
                float barWeight,
                int barColor,
                boolean isBarRounded,
@@ -118,6 +120,7 @@ public class Bar {
         mNumSegments = tickCount - 1;
         mTickDistance = length / mNumSegments;
         mTickHeight = tickHeight;
+        mTickWidth = tickWidth;
         // Initialize the paint.
         mBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBarPaint.setColor(barColor);
@@ -161,6 +164,7 @@ public class Bar {
                float length,
                int tickCount,
                float tickHeight,
+               float tickWidth,
                int tickDefaultColor,
                float barWeight,
                int barColor,
@@ -170,7 +174,7 @@ public class Bar {
                float barShadowedDy,
                int barShadowedColor,
                boolean isBarShadowed) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
+        this(ctx, x, y, length, tickCount, tickHeight, tickWidth, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
 
         mTickDefaultColor = tickDefaultColor;
         mTickPaint.setColor(tickDefaultColor);
@@ -198,6 +202,7 @@ public class Bar {
                float length,
                int tickCount,
                float tickHeight,
+               float tickWidth,
                float barWeight,
                int barColor,
                boolean isBarRounded,
@@ -213,7 +218,7 @@ public class Bar {
                String tickDefaultLabel,
                float tickLabelSize,
                int mFontFamily) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
+        this(ctx, x, y, length, tickCount, tickHeight, tickWidth, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed);
 
         if (tickTopLabels != null || tickBottomLabels != null) {
             // Creates the paint and sets the Paint values
@@ -255,6 +260,7 @@ public class Bar {
                float length,
                int tickCount,
                float tickHeight,
+               float tickWidth,
                int tickDefaultColor,
                float barWeight,
                int barColor,
@@ -271,7 +277,7 @@ public class Bar {
                String tickDefaultLabel,
                float tickLabelSize,
                int fontFamily) {
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
+        this(ctx, x, y, length, tickCount, tickHeight, tickWidth, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
         mTickDefaultColor = tickDefaultColor;
         mTickPaint.setColor(tickDefaultColor);
     }
@@ -302,6 +308,7 @@ public class Bar {
                float length,
                int tickCount,
                float tickHeight,
+               float tickWidth,
                int tickDefaultColor,
                int tickActiveColor,
                int tickInactiveColor,
@@ -325,7 +332,7 @@ public class Bar {
                int fontFamily,
                float bottomLabelMarginTop) {
 
-        this(ctx, x, y, length, tickCount, tickHeight, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
+        this(ctx, x, y, length, tickCount, tickHeight, tickWidth, barWeight, barColor, isBarRounded, barShadowedRadius, barShadowedDx, barShadowedDy, barShadowedColor, isBarShadowed, tickLabelColor, tickLabelSelectedColor, tickTopLabels, tickBottomLabels, tickDefaultLabel, tickLabelSize, fontFamily);
 
         mBottomLabelMarginTop = bottomLabelMarginTop;
         mTickDefaultColor = tickDefaultColor;
@@ -467,7 +474,11 @@ public class Bar {
             final float x = i * mTickDistance + mLeftX;
 
             //canvas.drawCircle(x, mY, mTickHeight, getTick(i));
-            canvas.drawCircle(x, mY, mTickHeight, getTick(i, rightThumb, leftThumb));
+            if (mTickWidth != 0) {
+                canvas.drawRect(x - mTickWidth / 2, mY - mTickHeight / 2, x + mTickWidth / 2, mY + mTickHeight / 2, getTick(i, rightThumb, leftThumb));
+            } else {
+                canvas.drawCircle(x, mY, mTickHeight, getTick(i, rightThumb, leftThumb));
+            }
 
             if (paintLabel) {
                 if (mTickTopLabels != null)
@@ -480,7 +491,11 @@ public class Bar {
         // Draw final tick. We draw the final tick outside the loop to avoid any
         // rounding discrepancies.
         // canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments));
-        canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments, rightThumb, leftThumb));
+        if (mTickWidth != 0) {
+            canvas.drawRect(mRightX - mTickWidth / 2, mY - mTickHeight / 2, mRightX + mTickWidth / 2, mY + mTickHeight / 2, getTick(mNumSegments, rightThumb, leftThumb));
+        } else {
+            canvas.drawCircle(mRightX, mY, mTickHeight, getTick(mNumSegments, rightThumb, leftThumb));
+        }
 
         // Draw final tick's label outside the loop
         if (paintLabel) {
