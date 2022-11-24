@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -429,8 +430,11 @@ public class RangeBar extends View {
             mMaxPinFont = bundle.getFloat("MAX_PIN_FONT");
 
             setRangePinsByIndices(mLeftIndex, mRightIndex);
-            super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                super.onRestoreInstanceState(bundle.getParcelable("instanceState", Parcelable.class));
+            } else {
+                super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+            }
         } else {
             super.onRestoreInstanceState(state);
         }
