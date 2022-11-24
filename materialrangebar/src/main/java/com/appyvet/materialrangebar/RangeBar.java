@@ -86,6 +86,10 @@ public class RangeBar extends View {
 
     private static final int DEFAULT_BAR_COLOR = Color.LTGRAY;
 
+    private static final int DEFAULT_BAR_BOUNDARY_COLOR = Color.LTGRAY;
+
+    private static final float DEFAULT_BAR_BOUNDARY_SIZE_DP = 0;
+
     private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
 
     private static final int DEFAULT_TICK_COLOR = Color.BLACK;
@@ -131,6 +135,10 @@ public class RangeBar extends View {
     private boolean mIsBarRounded = false;
 
     private int mBarColor = DEFAULT_BAR_COLOR;
+
+    private int mBarBoundaryColor = DEFAULT_BAR_BOUNDARY_COLOR;
+
+    private float mBarBoundarySize = DEFAULT_BAR_BOUNDARY_SIZE_DP;
 
     private int mPinColor = DEFAULT_PIN_COLOR;
 
@@ -225,6 +233,7 @@ public class RangeBar extends View {
     private ArrayList<Integer> mActiveConnectingLineColors = new ArrayList<>();
 
     private int mActiveBarColor;
+    private int mActiveBarBoundaryColor;
 
     private int mActiveTickDefaultColor;
 
@@ -313,6 +322,8 @@ public class RangeBar extends View {
         bundle.putFloat("BAR_WEIGHT", mBarWeight);
         bundle.putBoolean("BAR_ROUNDED", mIsBarRounded);
         bundle.putInt("BAR_COLOR", mBarColor);
+        bundle.putInt("BAR_BOUNDARY_COLOR", mBarBoundaryColor);
+        bundle.putFloat("BAR_BOUNDARY_SIZE", mBarBoundarySize);
         bundle.putFloat("CONNECTING_LINE_WEIGHT", mConnectingLineWeight);
         bundle.putIntegerArrayList("CONNECTING_LINE_COLOR", mConnectingLineColors);
 
@@ -363,6 +374,8 @@ public class RangeBar extends View {
             mBarWeight = bundle.getFloat("BAR_WEIGHT");
             mIsBarRounded = bundle.getBoolean("BAR_ROUNDED", false);
             mBarColor = bundle.getInt("BAR_COLOR");
+            mBarBoundaryColor = bundle.getInt("BAR_BOUNDARY_COLOR");
+            mBarBoundarySize = bundle.getInt("BAR_BOUNDARY_SIZE");
             mThumbSize = bundle.getFloat("CIRCLE_SIZE");
             mThumbColor = bundle.getInt("CIRCLE_COLOR");
             mThumbColorLeft = bundle.getInt("CIRCLE_COLOR_LEFT");
@@ -460,7 +473,7 @@ public class RangeBar extends View {
         final float barLength = w - (2 * marginLeft);
 
         mBar = new Bar(ctx, marginLeft, yPos, barLength, mTickCount, mTickHeight, mTickDefaultColor, mTickColors,
-                mBarWeight, mBarColor, mIsBarRounded, mTickLabelColor, mTickLabelSelectedColor,
+                mBarWeight, mBarColor, mBarBoundaryColor, mBarBoundarySize, mIsBarRounded, mTickLabelColor, mTickLabelSelectedColor,
                 mTickTopLabels, mTickBottomLabels, mTickDefaultLabel, mTickLabelSize, mFontFamily, mBottomLabelMarginTop);
 
         // Initialize thumbs to the desired indices
@@ -1308,6 +1321,7 @@ public class RangeBar extends View {
     public void setEnabled(boolean enabled) {
         if (!enabled) {
             mBarColor = DEFAULT_BAR_COLOR;
+            mBarBoundaryColor = DEFAULT_BAR_BOUNDARY_COLOR;
             setConnectingLineColor(DEFAULT_BAR_COLOR);
             mThumbColor = DEFAULT_BAR_COLOR;
             mThumbColorLeft = DEFAULT_BAR_COLOR;
@@ -1319,6 +1333,7 @@ public class RangeBar extends View {
             mTickLabelSelectedColor = DEFAULT_BAR_COLOR;
         } else {
             mBarColor = mActiveBarColor;
+            mBarBoundaryColor = mActiveBarBoundaryColor;
             setConnectingLineColor(mActiveConnectingLineColor);
             setConnectingLineColors(mActiveConnectingLineColors);
             mThumbColor = mActiveCircleColor;
@@ -1428,9 +1443,15 @@ public class RangeBar extends View {
             );
 
             mBarColor = ta.getColor(R.styleable.RangeBar_mrb_rangeBarColor, DEFAULT_BAR_COLOR);
+            mBarBoundaryColor = ta.getColor(R.styleable.RangeBar_mrb_rangeBarBoundaryColor, DEFAULT_BAR_BOUNDARY_COLOR);
+            mBarBoundarySize = ta.getDimension(R.styleable.RangeBar_mrb_rangeBarBoundarySize,
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_BAR_BOUNDARY_SIZE_DP,
+                            mDisplayMetrices)
+            );
             mTextColor = ta.getColor(R.styleable.RangeBar_mrb_pinTextColor, DEFAULT_TEXT_COLOR);
             mPinColor = ta.getColor(R.styleable.RangeBar_mrb_pinColor, DEFAULT_PIN_COLOR);
             mActiveBarColor = mBarColor;
+            mActiveBarBoundaryColor = mBarBoundaryColor;
 
 
             mThumbColor = ta.getColor(R.styleable.RangeBar_mrb_thumbColor,
@@ -1520,6 +1541,8 @@ public class RangeBar extends View {
                 mTickColors,
                 mBarWeight,
                 mBarColor,
+                mBarBoundaryColor,
+                mBarBoundarySize,
                 mIsBarRounded,
                 mTickLabelColor,
                 mTickLabelSelectedColor,

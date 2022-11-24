@@ -38,6 +38,10 @@ public class Bar {
     private final Resources mRes;
 
     private final Paint mBarPaint;
+    private int mBarColor;
+    private float mBarWeight;
+    private int mBarBoundaryColor;
+    private float mBarBoundarySize;
 
     private final Paint mTickPaint;
     private Paint mLabelPaint;
@@ -269,6 +273,8 @@ public class Bar {
                List<Integer> tickColors,
                float barWeight,
                int barColor,
+               int barBoundaryColor,
+               float barBoundarySize,
                boolean isBarRounded,
                int tickLabelColor,
                int tickLabelSelectedColor,
@@ -284,6 +290,11 @@ public class Bar {
         mBottomLabelMarginTop = bottomLabelMarginTop;
         mTickDefaultColor = tickDefaultColor;
         mTickColors = tickColors;
+
+        mBarColor = barColor;
+        mBarWeight = barWeight;
+        mBarBoundaryColor = barBoundaryColor;
+        mBarBoundarySize = barBoundarySize;
     }
     // Package-Private Methods /////////////////////////////////////////////////
 
@@ -294,6 +305,14 @@ public class Bar {
      *               View#onDraw()}
      */
     public void draw(Canvas canvas) {
+        if(mBarBoundarySize > 0){
+            mBarPaint.setColor(mBarBoundaryColor);
+            mBarPaint.setStrokeWidth(mBarWeight + mBarBoundarySize);
+            canvas.drawLine(mLeftX, mY, mRightX, mY, mBarPaint);
+        }
+
+        mBarPaint.setColor(mBarColor);
+        mBarPaint.setStrokeWidth(mBarWeight);
         canvas.drawLine(mLeftX, mY, mRightX, mY, mBarPaint);
     }
 
